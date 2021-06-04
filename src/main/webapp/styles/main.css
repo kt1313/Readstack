@@ -1,0 +1,40 @@
+/* pozbywamy się podkreśleń linków */
+a {
+    text-decoration: none;
+}
+
+/* logo po lewej, przycisk logowania po prawej */
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0;
+}
+
+/* kolorowe logo */
+.logo {
+    color: #FF3B30;
+    font-size: 2em;
+    font-weight: 400;
+}
+
+/* efekt przycisku logowania */
+.login-button {
+    background-color: #007AFF;
+    color: white;
+    font-size: 0.8em;
+    text-transform: uppercase;
+    padding: 3px 16px;
+    line-height: 24px;
+    font-weight: 400;
+    letter-spacing: .1em;
+}
+
+/* po najechaniu na przycisk lekka przezroczystość */
+.login-button:hover {
+    opacity: 80%;
+}
+body {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+}
