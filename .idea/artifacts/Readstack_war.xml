@@ -7,7 +7,7 @@
         <packaging>war</packaging>
       </options>
     </properties>
-    <root id="archive" name="Readstack-1.0-SNAPSHOT.war">
+    <root id="archive" name="readstack-1.0-SNAPSHOT.war">
       <element id="artifact" artifact-name="Readstack:war exploded" />
     </root>
   </artifact>
