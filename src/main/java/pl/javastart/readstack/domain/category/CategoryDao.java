@@ -1,40 +1,39 @@
-package pl.javastart.readstack.domain.discovery;
+package pl.javastart.readstack.domain.category;
 
 import pl.javastart.readstack.config.DataSourceProvider;
 
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-public class DiscoveryDao {
+public class CategoryDao {
 
     //reszta bez zmian
 
-    public List<Discovery> findByCategory(int categoryId) {
+    public Optional<Category> findById(int categoryId) {
         final String query = """
                 SELECT
-                    id, title, url, description, date_added, category_id
+                    id, name, description
                 FROM
-                    discovery
+                    category
                 WHERE
-                    category_id = ?
+                    id = ?
                 """;
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, categoryId);
             ResultSet resultSet = statement.executeQuery();
-            List<Discovery> discoveries = new ArrayList<>();
-            while (resultSet.next()) {
-                Discovery discovery = mapRow(resultSet);
-                discoveries.add(discovery);
+            if (resultSet.next()) {
+                Category category = mapRow(resultSet);
+                return Optional.of(category);
+            } else {
+                return Optional.empty();
             }
-            return discoveries;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
-
 }
