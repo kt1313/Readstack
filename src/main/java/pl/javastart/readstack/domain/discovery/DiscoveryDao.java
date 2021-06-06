@@ -1,17 +1,34 @@
 package pl.javastart.readstack.domain.discovery;
 
-import pl.javastart.readstack.config.DataSourceProvider;
+import pl.javastart.readstack.domain.common.BaseDao;
 
-import javax.naming.NamingException;
-import javax.sql.DataSource;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DiscoveryDao {
+public class DiscoveryDao extends BaseDao {
 
-    //reszta bez zmian
+    public List<Discovery> findAll() {
+        final String query = """
+                SELECT
+                    id, title, url, description, date_added, category_id
+                FROM
+                    discovery d
+                """;
+        try (Connection connection = getConnection();
+             Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(query);
+            List<Discovery> allDiscoveries = new ArrayList<>();
+            while (resultSet.next()) {
+                Discovery discovery = mapRow(resultSet);
+                allDiscoveries.add(discovery);
+            }
+            return allDiscoveries;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public List<Discovery> findByCategory(int categoryId) {
         final String query = """
@@ -22,7 +39,7 @@ public class DiscoveryDao {
                 WHERE
                     category_id = ?
                 """;
-        try (Connection connection = dataSource.getConnection();
+        try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, categoryId);
             ResultSet resultSet = statement.executeQuery();
@@ -37,4 +54,13 @@ public class DiscoveryDao {
         }
     }
 
+    private static Discovery mapRow(ResultSet set) throws SQLException {
+        int discoveryId = set.getInt("id");
+        String title = set.getString("title");
+        String url = set.getString("url");
+        String description = set.getString("description");
+        LocalDateTime dateAdded = set.getTimestamp("date_added").toLocalDateTime();
+        int categoryId = set.getInt("category_id");
+        return new Discovery(discoveryId, title, url, description, dateAdded, categoryId);
+    }
 }
